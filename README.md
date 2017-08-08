@@ -1,4 +1,5 @@
-# ReactiveAirplane
+ReactiveAirplaneMode
+====================
 ✈️ Android library listening airplane mode with RxJava Observables
 
 References
