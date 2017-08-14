@@ -167,6 +167,16 @@ public class ReactiveAirplaneMode {
   }
 
   /**
+   * Handles errors which occurs within this class
+   *
+   * @param message with an error
+   * @param exception which occurred
+   */
+  protected void onError(final String message, final Exception exception) {
+    Log.e(LOG_TAG, message, exception);
+  }
+
+  /**
    * Gets airplane mode state wrapped within a Single type
    *
    * @param context of the Application or Activity
@@ -217,16 +227,6 @@ public class ReactiveAirplaneMode {
    */
   @SuppressWarnings("deprecation") private String getAirplaneModeOnSettingSystem() {
     return Settings.System.AIRPLANE_MODE_ON;
-  }
-
-  /**
-   * Handles errors which occurs within this class
-   *
-   * @param message with an error
-   * @param exception which occurred
-   */
-  protected void onError(final String message, final Exception exception) {
-    Log.e(LOG_TAG, message, exception);
   }
 
   /**
