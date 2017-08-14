@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.Single;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +97,17 @@ import static org.mockito.Mockito.verify;
 
     // then
     assertThat(single.blockingGet()).isFalse();
+  }
+
+  @Test public void shouldCreateBroadcastReceiver() {
+    // given
+    ObservableEmitter<Boolean> emitter = mock(ObservableEmitter.class);
+
+    // when
+    BroadcastReceiver receiver = reactiveAirplaneMode.createBroadcastReceiver(emitter);
+
+    // then
+    assertThat(receiver).isNotNull();
   }
 
   @Test public void shouldCreateIntentFilter() {
