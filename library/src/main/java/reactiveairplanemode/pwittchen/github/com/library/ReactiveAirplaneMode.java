@@ -96,6 +96,17 @@ public class ReactiveAirplaneMode {
   }
 
   /**
+   * Creates IntentFilter for BroadcastReceiver
+   *
+   * @return IntentFilter
+   */
+  @NonNull protected IntentFilter createIntentFilter() {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+    return filter;
+  }
+
+  /**
    * Creates BroadcastReceiver for monitoring airplane mode
    *
    * @param emitter for RxJava
@@ -112,14 +123,31 @@ public class ReactiveAirplaneMode {
   }
 
   /**
-   * Creates IntentFilter for BroadcastReceiver
+   * Disposes an action in UI Thread
    *
-   * @return IntentFilter
+   * @param dispose action to be executed
+   * @return Disposable object
    */
-  @NonNull protected IntentFilter createIntentFilter() {
-    final IntentFilter filter = new IntentFilter();
-    filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-    return filter;
+  private Disposable disposeInUiThread(final Action dispose) {
+    return Disposables.fromAction(new Action() {
+      @Override public void run() throws Exception {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+          dispose.run();
+        } else {
+          final Scheduler.Worker inner = AndroidSchedulers.mainThread().createWorker();
+          inner.schedule(new Runnable() {
+            @Override public void run() {
+              try {
+                dispose.run();
+              } catch (Exception exception) {
+                onError("Could not unregister receiver in UI Thread", exception);
+              }
+              inner.dispose();
+            }
+          });
+        }
+      }
+    });
   }
 
   /**
@@ -220,33 +248,5 @@ public class ReactiveAirplaneMode {
    */
   private boolean isAtLeastAndroidJellyBeanMr1() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
-  }
-
-  /**
-   * Disposes an action in UI Thread
-   *
-   * @param dispose action to be executed
-   * @return Disposable object
-   */
-  private Disposable disposeInUiThread(final Action dispose) {
-    return Disposables.fromAction(new Action() {
-      @Override public void run() throws Exception {
-        if (Looper.getMainLooper() == Looper.myLooper()) {
-          dispose.run();
-        } else {
-          final Scheduler.Worker inner = AndroidSchedulers.mainThread().createWorker();
-          inner.schedule(new Runnable() {
-            @Override public void run() {
-              try {
-                dispose.run();
-              } catch (Exception exception) {
-                onError("Could not unregister receiver in UI Thread", exception);
-              }
-              inner.dispose();
-            }
-          });
-        }
-      }
-    });
   }
 }
