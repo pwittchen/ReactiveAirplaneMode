@@ -43,7 +43,6 @@ import io.reactivex.functions.Action;
 public class ReactiveAirplaneMode {
 
   private static final String LOG_TAG = "ReactiveAirplaneMode";
-  private static final String INTENT_ACTION_AIRPLANE_MODE = "android.intent.action.AIRPLANE_MODE";
   private static final String INTENT_EXTRA_STATE = "state";
 
   private ReactiveAirplaneMode() {
@@ -79,12 +78,10 @@ public class ReactiveAirplaneMode {
    */
   public Observable<Boolean> observe(final Context context) {
     checkContextIsNotNull(context);
-
     final IntentFilter filter = createIntentFilter();
 
     return Observable.create(new ObservableOnSubscribe<Boolean>() {
-      @Override public void subscribe(
-          @NonNull final ObservableEmitter<Boolean> emitter)
+      @Override public void subscribe(@NonNull final ObservableEmitter<Boolean> emitter)
           throws Exception {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(final Context context, final Intent intent) {
@@ -105,7 +102,7 @@ public class ReactiveAirplaneMode {
   }
 
   @NonNull public IntentFilter createIntentFilter() {
-    final IntentFilter filter = new IntentFilter(INTENT_ACTION_AIRPLANE_MODE);
+    final IntentFilter filter = new IntentFilter();
     filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
     return filter;
   }
@@ -118,8 +115,7 @@ public class ReactiveAirplaneMode {
    * @param receiver BroadcastReceiver
    * @param context of the Application or Activity
    */
-  public void tryToUnregisterReceiver(final BroadcastReceiver receiver,
-      final Context context) {
+  public void tryToUnregisterReceiver(final BroadcastReceiver receiver, final Context context) {
     try {
       context.unregisterReceiver(receiver);
     } catch (Exception exception) {
@@ -135,7 +131,6 @@ public class ReactiveAirplaneMode {
    */
   public Single<Boolean> get(final Context context) {
     checkContextIsNotNull(context);
-
     return Single.create(new SingleOnSubscribe<Boolean>() {
       @Override public void subscribe(@NonNull SingleEmitter<Boolean> emitter) throws Exception {
         emitter.onSuccess(isAirplaneModeOn(context));
@@ -168,8 +163,7 @@ public class ReactiveAirplaneMode {
    *
    * @return String indicating airplane mode setting
    */
-  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-  private String getAirplaneModeOnSettingGlobal() {
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) private String getAirplaneModeOnSettingGlobal() {
     return Settings.Global.AIRPLANE_MODE_ON;
   }
 
@@ -192,19 +186,14 @@ public class ReactiveAirplaneMode {
     Log.e(LOG_TAG, message, exception);
   }
 
-  private void checkContextIsNotNull(Context context) {
-    checkNotNull(context, "context == null");
-  }
-
   /**
-   * Validation method, which checks if an object is null
+   * Validation method, which checks if context of the Activity or Application is not null
    *
-   * @param object to verify
-   * @param message to be thrown in exception
+   * @param context of the Activity or application
    */
-  public void checkNotNull(Object object, String message) {
-    if (object == null) {
-      throw new IllegalArgumentException(message);
+  public void checkContextIsNotNull(Context context) {
+    if (context == null) {
+      throw new IllegalArgumentException("context == null");
     }
   }
 

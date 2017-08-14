@@ -15,12 +15,18 @@
  */
 package reactiveairplanemode.pwittchen.github.com.library;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import io.reactivex.Observable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -52,12 +58,72 @@ import static org.mockito.Mockito.verify;
 
   @Test public void observeShouldCreateIntentFilter() {
     // given
-    ReactiveAirplaneMode reactiveAirplaneMode = spy(ReactiveAirplaneMode.create());
+    final ReactiveAirplaneMode reactiveAirplaneMode = spy(ReactiveAirplaneMode.create());
+    final Context context = RuntimeEnvironment.application.getApplicationContext();
 
     // when
-    reactiveAirplaneMode.observe(RuntimeEnvironment.application);
+    reactiveAirplaneMode.observe(context);
 
     // then
     verify(reactiveAirplaneMode).createIntentFilter();
+  }
+
+  @Test public void isAirplaneModeOnShouldReturnFalseByDefault() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+    final Context context = RuntimeEnvironment.application.getApplicationContext();
+
+    // when
+    final boolean isAirplaneModeOn = reactiveAirplaneMode.isAirplaneModeOn(context);
+
+    // then
+    assertThat(isAirplaneModeOn).isFalse();
+  }
+
+  @Test public void getAndObserveShouldEmitAirplaneModeOffByDefault() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+    final Context context = RuntimeEnvironment.application.getApplicationContext();
+
+    // when
+    Observable<Boolean> observable = reactiveAirplaneMode.getAndObserve(context);
+
+    // then
+    assertThat(observable.blockingFirst()).isFalse();
+  }
+
+  @Test public void shouldCreateIntentFilter() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+
+    // when
+    final IntentFilter intentFilter = reactiveAirplaneMode.createIntentFilter();
+
+    // then
+    assertThat(intentFilter).isNotNull();
+  }
+
+  @Test public void shouldCreateIntentFilterWithAirplaneModeChangedAction() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+
+    // when
+    final IntentFilter intentFilter = reactiveAirplaneMode.createIntentFilter();
+
+    // then
+    assertThat(intentFilter.getAction(0)).isEqualTo(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+  }
+
+  @Test public void shouldTryToUnregisterReceiver() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+    final BroadcastReceiver broadcastReceiver = mock(BroadcastReceiver.class);
+    final Context context = spy(RuntimeEnvironment.application.getApplicationContext());
+
+    // when
+    reactiveAirplaneMode.tryToUnregisterReceiver(broadcastReceiver, context);
+
+    // then
+    verify(context).unregisterReceiver(broadcastReceiver);
   }
 }
