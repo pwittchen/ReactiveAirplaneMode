@@ -14,6 +14,7 @@ Contents
 - [Code style](#code-style)
 - [Static code analysis](#static-code-analysis)
 - [Changelog](#changelog)
+- [Releasing](#releasing)
 - [License](#license)
 
 Usage
@@ -78,7 +79,12 @@ Reports from analysis are generated in library/build/reports/ directory.
 Changelog
 ---------
 
-TBD.
+See [CHANGELOG.md](https://github.com/pwittchen/ReactiveAirplaneMode/blob/master/CHANGELOG.md) file.
+
+Releasing
+---------
+
+See [RELEASING.md](https://github.com/pwittchen/ReactiveAirplaneMode/blob/master/RELEASING.md) file.
 
 References
 ----------
