@@ -34,10 +34,12 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
 
+  private Context context;
   private ReactiveAirplaneMode reactiveAirplaneMode;
 
   @Before public void setUp() {
-    reactiveAirplaneMode = ReactiveAirplaneMode.create();
+    context = spy(RuntimeEnvironment.application.getApplicationContext());
+    reactiveAirplaneMode = spy(ReactiveAirplaneMode.create());
   }
 
   @Test public void reactiveAirplaneModeObjectShouldNotBeNull() {
@@ -65,21 +67,14 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void observeShouldCreateIntentFilter() {
-    // given
-    final ReactiveAirplaneMode reactiveAirplaneModeSpy = spy(reactiveAirplaneMode);
-    final Context context = RuntimeEnvironment.application.getApplicationContext();
-
     // when
-    reactiveAirplaneModeSpy.observe(context);
+    reactiveAirplaneMode.observe(context);
 
     // then
-    verify(reactiveAirplaneModeSpy).createIntentFilter();
+    verify(reactiveAirplaneMode).createIntentFilter();
   }
 
   @Test public void isAirplaneModeOnShouldReturnFalseByDefault() {
-    // given
-    final Context context = RuntimeEnvironment.application.getApplicationContext();
-
     // when
     final boolean isAirplaneModeOn = reactiveAirplaneMode.isAirplaneModeOn(context);
 
@@ -88,9 +83,6 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void getAndObserveShouldEmitAirplaneModeOffByDefault() {
-    // given
-    final Context context = RuntimeEnvironment.application.getApplicationContext();
-
     // when
     Observable<Boolean> observable = reactiveAirplaneMode.getAndObserve(context);
 
@@ -99,9 +91,6 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void getShouldEmitAirplaneModeOffByDefault() {
-    // given
-    final Context context = RuntimeEnvironment.application.getApplicationContext();
-
     // when
     Single<Boolean> single = reactiveAirplaneMode.get(context);
 
@@ -128,7 +117,6 @@ import static org.mockito.Mockito.verify;
   @Test public void shouldTryToUnregisterReceiver() {
     // given
     final BroadcastReceiver broadcastReceiver = mock(BroadcastReceiver.class);
-    final Context context = spy(RuntimeEnvironment.application.getApplicationContext());
 
     // when
     reactiveAirplaneMode.tryToUnregisterReceiver(broadcastReceiver, context);
