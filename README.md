@@ -25,7 +25,8 @@ Usage
 We can observe airplane mode in the following way:
 
 ```java
-ReactiveAirplaneMode.observe(context)
+ReactiveAirplaneMode.create()
+    .observe(context)
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
