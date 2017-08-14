@@ -10,6 +10,7 @@
 
   <TextView
       android:id="@+id/tv_airplane_mode"
+      android:text="waiting for the airplane mode..."
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:layout_constraintBottom_toBottomOf="parent"

@@ -86,7 +86,7 @@ public class ReactiveAirplaneMode {
           }
         });
       }
-    }).defaultIfEmpty(isAirplaneModeOn(context));
+    }).startWith(isAirplaneModeOn(context));
   }
 
   /**
@@ -124,7 +124,7 @@ public class ReactiveAirplaneMode {
       airplaneModeOnSetting = getAirplaneModeOnSettingSystem();
     }
 
-    return Settings.System.getInt(context.getContentResolver(), airplaneModeOnSetting, 0) == 0;
+    return Settings.System.getInt(context.getContentResolver(), airplaneModeOnSetting, 0) == 1;
   }
 
   /**
