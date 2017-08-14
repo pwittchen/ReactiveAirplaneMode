@@ -97,10 +97,11 @@ public class ReactiveAirplaneMode {
 
   /**
    * Creates BroadcastReceiver for monitoring airplane mode
+   *
    * @param emitter for RxJava
    * @return BroadcastReceiver
    */
-  @NonNull public BroadcastReceiver createBroadcastReceiver(
+  @NonNull protected BroadcastReceiver createBroadcastReceiver(
       @NonNull final ObservableEmitter<Boolean> emitter) {
     return new BroadcastReceiver() {
       @Override public void onReceive(final Context context, final Intent intent) {
@@ -112,9 +113,10 @@ public class ReactiveAirplaneMode {
 
   /**
    * Creates IntentFilter for BroadcastReceiver
+   *
    * @return IntentFilter
    */
-  @NonNull public IntentFilter createIntentFilter() {
+  @NonNull protected IntentFilter createIntentFilter() {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
     return filter;
@@ -128,7 +130,7 @@ public class ReactiveAirplaneMode {
    * @param receiver BroadcastReceiver
    * @param context of the Application or Activity
    */
-  public void tryToUnregisterReceiver(final BroadcastReceiver receiver, final Context context) {
+  protected void tryToUnregisterReceiver(final BroadcastReceiver receiver, final Context context) {
     try {
       context.unregisterReceiver(receiver);
     } catch (Exception exception) {
@@ -195,7 +197,7 @@ public class ReactiveAirplaneMode {
    * @param message with an error
    * @param exception which occurred
    */
-  public void onError(final String message, final Exception exception) {
+  protected void onError(final String message, final Exception exception) {
     Log.e(LOG_TAG, message, exception);
   }
 
@@ -204,7 +206,7 @@ public class ReactiveAirplaneMode {
    *
    * @param context of the Activity or application
    */
-  public void checkContextIsNotNull(Context context) {
+  protected void checkContextIsNotNull(Context context) {
     if (context == null) {
       throw new IllegalArgumentException("context == null");
     }
@@ -216,7 +218,7 @@ public class ReactiveAirplaneMode {
    *
    * @return boolean true if current Android version is Jelly Bean MR1 or higher
    */
-  public boolean isAtLeastAndroidJellyBeanMr1() {
+  private boolean isAtLeastAndroidJellyBeanMr1() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
   }
 
