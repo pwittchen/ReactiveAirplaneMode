@@ -37,7 +37,7 @@ If you're using this code in an `Activity`, don't forget to dispose `Disposable`
 
 Please note that method above **will be called only when the Airplane mode changes**.
 
-If you want to read airplane mode and then observe it, you can use getAndObserve(context) method as follows:
+If you want to **read airplane mode on start and then observe it**, you can use `getAndObserve(context)` method as follows:
 
 ```java
 ReactiveAirplaneMode.getAndObserve(context)
@@ -46,7 +46,7 @@ ReactiveAirplaneMode.getAndObserve(context)
     .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
 ```
 
-If you want to check airplane mode only once, you can use `get(context)` method, which returns `Single<Boolean>` value:
+If you want to **check airplane mode only once**, you can use `get(context)` method, which returns `Single<Boolean>` value:
 
 ```java
 ReactiveAirplaneMode.get(context)
@@ -55,7 +55,7 @@ ReactiveAirplaneMode.get(context)
     .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
 ```
 
-If you want to check airplane mode only once without using Reactive Streams, just call `isAirplaneModeOn(context)` method:
+If you want to check airplane mode **only once without using Reactive Streams**, just call `isAirplaneModeOn(context)` method:
 
 ```java
 boolean isOn = ReactiveAirplaneMode.isAirplaneModeOn(context);
