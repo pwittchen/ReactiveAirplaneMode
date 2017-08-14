@@ -49,7 +49,7 @@ ReactiveAirplaneMode.getAndObserve(context)
 If you want to check airplane mode only once, you can use `get(context)` method, which returns `Single<Boolean>` value:
 
 ```java
-ReactiveAirplaneMode.get(this)
+ReactiveAirplaneMode.get(context)
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
@@ -58,7 +58,7 @@ ReactiveAirplaneMode.get(this)
 If you want to check airplane mode only once without using Reactive Streams, just call `isAirplaneModeOn(context)` method:
 
 ```java
-boolean isOn = ReactiveAirplaneMode.isAirplaneModeOn(this);
+boolean isOn = ReactiveAirplaneMode.isAirplaneModeOn(context);
 ```
 
 Examples
