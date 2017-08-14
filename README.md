@@ -35,7 +35,7 @@ When airplane mode changes, subscriber will be notified with appropriate `Boolea
 
 If you're using this code in an `Activity`, don't forget to dispose `Disposable` in `onPause()` method just like in the sample app.
 
-Please note that method above **will be called only when the Airplane mode changes**.
+Please note that method above **will be called only when the airplane mode changes**.
 
 If you want to **read airplane mode on start and then observe it**, you can use `getAndObserve(context)` method as follows:
 
