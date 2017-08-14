@@ -4,6 +4,8 @@ ReactiveAirplaneMode
 
 This library is compatible with RxJava2 and RxAndroid2.
 
+JavaDoc can be found at: https://pwittchen.github.io/ReactiveAirplaneMode/.
+
 Contents
 --------
 
