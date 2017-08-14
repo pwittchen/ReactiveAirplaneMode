@@ -21,6 +21,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import static com.google.common.truth.Truth.assertThat;
 
+//TODO: write tests!
 @RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
 
   @Test public void reactiveAirplaneModeObjectShouldNotBeNull() {
