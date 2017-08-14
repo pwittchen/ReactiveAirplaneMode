@@ -95,6 +95,11 @@ public class ReactiveAirplaneMode {
     });
   }
 
+  /**
+   * Creates BroadcastReceiver for monitoring airplane mode
+   * @param emitter for RxJava
+   * @return BroadcastReceiver
+   */
   @NonNull public BroadcastReceiver createBroadcastReceiver(
       @NonNull final ObservableEmitter<Boolean> emitter) {
     return new BroadcastReceiver() {
@@ -105,6 +110,10 @@ public class ReactiveAirplaneMode {
     };
   }
 
+  /**
+   * Creates IntentFilter for BroadcastReceiver
+   * @return IntentFilter
+   */
   @NonNull public IntentFilter createIntentFilter() {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
