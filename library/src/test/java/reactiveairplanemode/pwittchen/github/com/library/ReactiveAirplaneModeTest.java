@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -90,6 +91,18 @@ import static org.mockito.Mockito.verify;
 
     // then
     assertThat(observable.blockingFirst()).isFalse();
+  }
+
+  @Test public void getShouldEmitAirplaneModeOffByDefault() {
+    // given
+    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
+    final Context context = RuntimeEnvironment.application.getApplicationContext();
+
+    // when
+    Single<Boolean> single = reactiveAirplaneMode.get(context);
+
+    // then
+    assertThat(single.blockingGet()).isFalse();
   }
 
   @Test public void shouldCreateIntentFilter() {
