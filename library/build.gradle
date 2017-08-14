@@ -4,7 +4,6 @@ apply plugin: 'jacoco-android'
 apply from: '../config/quality.gradle'
 apply from: '../maven_push.gradle'
 
-
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
