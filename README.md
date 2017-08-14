@@ -19,32 +19,61 @@ Contents
 Usage
 -----
 
-TBD.
+We can observe airplane mode in the following way:
+
+```java
+ReactiveAirplaneMode.observe(context)
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(isOn -> textView.setText(String.format("Airplane mode: %s", isOn.toString())));
+```
+
+When airplane mode changes, subscriber will be notified with appropriate `Boolean` value (`true` if airplane mode is on or `false` otherwise).
+
+If you're using this code in an `Activity`, don't forget to dispose `Disposable` in `onPause()` method just like in the sample app.
 
 Examples
 --------
 
-TBD.
+Exemplary application is located in `app` directory of this repository.
 
 Download
 --------
 
 TBD.
 
+Library will be published on Maven Central Repository soon. Please, stay tuned.
+
 Tests
 -----
 
-TBD.
+Tests are available in `library/src/test/java/` directory and can be executed on JVM without any emulator or Android device from Android Studio or CLI with the following command:
+
+```
+./gradlew test
+```
+
+To generate test coverage report, run the following command:
+
+```
+./gradlew test jacocoTestReport
+```
 
 Code style
 ----------
 
-TBD.
+Code style used in the project is called `SquareAndroid` from Java Code Styles repository by Square available at: https://github.com/square/java-code-styles.
 
 Static code analysis
 --------------------
 
-TBD.
+Static code analysis runs Checkstyle, FindBugs, PMD and Lint. It can be executed with command:
+
+```
+./gradlew check
+```
+
+Reports from analysis are generated in library/build/reports/ directory.
 
 Changelog
 ---------
