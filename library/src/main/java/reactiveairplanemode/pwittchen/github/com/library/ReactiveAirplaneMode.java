@@ -124,7 +124,7 @@ public class ReactiveAirplaneMode {
   }
 
   /**
-   * gets airplane mode state wrapped within a Single type
+   * Gets airplane mode state wrapped within a Single type
    *
    * @param context of the Application or Activity
    * @return RxJava2 Single with Boolean value indicating state of the airplane mode
