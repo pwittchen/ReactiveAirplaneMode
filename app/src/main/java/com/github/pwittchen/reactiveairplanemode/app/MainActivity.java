@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     disposable = ReactiveAirplaneMode.observe(this)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(isOn -> textView.setText(String.format("Airplane mode: %s", isOn.toString())));
+        .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
   }
 
   @Override protected void onPause() {

@@ -26,7 +26,7 @@ We can observe airplane mode in the following way:
 ReactiveAirplaneMode.observe(context)
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(isOn -> textView.setText(String.format("Airplane mode: %s", isOn.toString())));
+    .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
 ```
 
 When airplane mode changes, subscriber will be notified with appropriate `Boolean` value (`true` if airplane mode is on or `false` otherwise).
