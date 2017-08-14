@@ -42,8 +42,8 @@ import io.reactivex.functions.Action;
  */
 public class ReactiveAirplaneMode {
 
+  protected static final String INTENT_EXTRA_STATE = "state";
   private static final String LOG_TAG = "ReactiveAirplaneMode";
-  private static final String INTENT_EXTRA_STATE = "state";
 
   private ReactiveAirplaneMode() {
   }

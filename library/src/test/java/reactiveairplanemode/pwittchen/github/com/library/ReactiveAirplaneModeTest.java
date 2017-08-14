@@ -32,6 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
 
@@ -85,7 +86,7 @@ import static org.mockito.Mockito.verify;
 
   @Test public void getAndObserveShouldEmitAirplaneModeOffByDefault() {
     // when
-    Observable<Boolean> observable = reactiveAirplaneMode.getAndObserve(context);
+    final Observable<Boolean> observable = reactiveAirplaneMode.getAndObserve(context);
 
     // then
     assertThat(observable.blockingFirst()).isFalse();
@@ -93,7 +94,7 @@ import static org.mockito.Mockito.verify;
 
   @Test public void getShouldEmitAirplaneModeOffByDefault() {
     // when
-    Single<Boolean> single = reactiveAirplaneMode.get(context);
+    final Single<Boolean> single = reactiveAirplaneMode.get(context);
 
     // then
     assertThat(single.blockingGet()).isFalse();
@@ -101,13 +102,41 @@ import static org.mockito.Mockito.verify;
 
   @Test public void shouldCreateBroadcastReceiver() {
     // given
-    ObservableEmitter<Boolean> emitter = mock(ObservableEmitter.class);
+    final ObservableEmitter<Boolean> emitter = mock(ObservableEmitter.class);
 
     // when
-    BroadcastReceiver receiver = reactiveAirplaneMode.createBroadcastReceiver(emitter);
+    final BroadcastReceiver receiver = reactiveAirplaneMode.createBroadcastReceiver(emitter);
 
     // then
     assertThat(receiver).isNotNull();
+  }
+
+  @Test public void broadcastReceiverShouldReceiveAnIntentWhereAirplaneModeIsOff() {
+    // given
+    final ObservableEmitter<Boolean> emitter = mock(ObservableEmitter.class);
+    final BroadcastReceiver receiver = reactiveAirplaneMode.createBroadcastReceiver(emitter);
+    final Intent intent = mock(Intent.class);
+    when(intent.getBooleanExtra(ReactiveAirplaneMode.INTENT_EXTRA_STATE, false)).thenReturn(false);
+
+    // when
+    receiver.onReceive(context, intent);
+
+    // then
+    verify(emitter).onNext(false);
+  }
+
+  @Test public void broadcastReceiverShouldReceiveAnIntentWhereAirplaneModeIsOn() {
+    // given
+    final ObservableEmitter<Boolean> emitter = mock(ObservableEmitter.class);
+    final BroadcastReceiver receiver = reactiveAirplaneMode.createBroadcastReceiver(emitter);
+    final Intent intent = mock(Intent.class);
+    when(intent.getBooleanExtra(ReactiveAirplaneMode.INTENT_EXTRA_STATE, false)).thenReturn(true);
+
+    // when
+    receiver.onReceive(context, intent);
+
+    // then
+    verify(emitter).onNext(true);
   }
 
   @Test public void shouldCreateIntentFilter() {
