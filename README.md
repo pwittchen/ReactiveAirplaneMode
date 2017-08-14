@@ -35,6 +35,32 @@ When airplane mode changes, subscriber will be notified with appropriate `Boolea
 
 If you're using this code in an `Activity`, don't forget to dispose `Disposable` in `onPause()` method just like in the sample app.
 
+Please note that method above **will be called only when the Airplane mode changes**.
+
+If you want to read airplane mode and then observe it, you can use getAndObserve(context) method as follows:
+
+```java
+ReactiveAirplaneMode.getAndObserve(context)
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
+```
+
+If you want to check airplane mode only once, you can use `get(context)` method, which returns `Single<Boolean>` value:
+
+```java
+ReactiveAirplaneMode.get(this)
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
+```
+
+If you want to check airplane mode only once without using Reactive Streams, just call `isAirplaneModeOn(context)` method:
+
+```java
+boolean isOn = ReactiveAirplaneMode.isAirplaneModeOn(this);
+```
+
 Examples
 --------
 

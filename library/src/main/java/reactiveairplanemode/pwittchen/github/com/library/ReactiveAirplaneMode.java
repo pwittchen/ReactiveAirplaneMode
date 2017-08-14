@@ -28,6 +28,9 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
@@ -53,6 +56,18 @@ public class ReactiveAirplaneMode {
    */
   public static ReactiveAirplaneMode create() {
     return new ReactiveAirplaneMode();
+  }
+
+  /**
+   * Emits current state of the Airplane Mode in the beginning of the subscription
+   * and then Observes Airplane Mode state of the device with BroadcastReceiver.
+   * RxJava2 Observable emits true if the airplane mode turns on and false otherwise.
+   *
+   * @param context of the Application or Activity
+   * @return RxJava2 Observable with Boolean value indicating state of the airplane mode
+   */
+  public static Observable<Boolean> getAndObserve(final Context context) {
+    return observe(context).startWith(isAirplaneModeOn(context));
   }
 
   /**
@@ -86,7 +101,7 @@ public class ReactiveAirplaneMode {
           }
         });
       }
-    }).startWith(isAirplaneModeOn(context));
+    });
   }
 
   /**
@@ -104,6 +119,19 @@ public class ReactiveAirplaneMode {
     } catch (Exception exception) {
       onError("receiver was already unregistered", exception);
     }
+  }
+
+  /**
+   * gets airplane mode state wrapped within a Single type
+   * @param context of the Application or Activity
+   * @return RxJava2 Single with Boolean value indicating state of the airplane mode
+   */
+  public static Single<Boolean> get(final Context context) {
+    return Single.create(new SingleOnSubscribe<Boolean>() {
+      @Override public void subscribe(@NonNull SingleEmitter<Boolean> emitter) throws Exception {
+        emitter.onSuccess(isAirplaneModeOn(context));
+      }
+    });
   }
 
   /**

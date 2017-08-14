@@ -37,10 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
   @Override protected void onResume() {
     super.onResume();
-    disposable = ReactiveAirplaneMode.observe(this)
+    disposable = ReactiveAirplaneMode.getAndObserve(this)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(isOn -> textView.setText(String.format("Airplane mode on: %s", isOn.toString())));
+        .subscribe(isOn -> {
+          final String formattedString = String.format("Airplane mode on: %s", isOn.toString());
+          textView.setText(formattedString);
+        });
   }
 
   @Override protected void onPause() {
