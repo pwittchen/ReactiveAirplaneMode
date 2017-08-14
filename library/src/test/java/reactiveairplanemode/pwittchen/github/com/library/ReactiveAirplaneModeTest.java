@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -33,45 +34,50 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
 
+  private ReactiveAirplaneMode reactiveAirplaneMode;
+
+  @Before public void setUp() {
+    reactiveAirplaneMode = ReactiveAirplaneMode.create();
+  }
+
   @Test public void reactiveAirplaneModeObjectShouldNotBeNull() {
-    assertThat(ReactiveAirplaneMode.create()).isNotNull();
+    assertThat(reactiveAirplaneMode).isNotNull();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getAndObserveShouldThrowAnExceptionForNullContext() {
-    ReactiveAirplaneMode.create().getAndObserve(null);
+    reactiveAirplaneMode.getAndObserve(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void observeShouldThrowAnExceptionForNullContext() {
-    ReactiveAirplaneMode.create().observe(null);
+    reactiveAirplaneMode.observe(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getShouldThrowAnExceptionForNullContext() {
-    ReactiveAirplaneMode.create().get(null);
+    reactiveAirplaneMode.get(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void isAirplaneModeOnShouldThrowAnExceptionForNullContext() {
-    ReactiveAirplaneMode.create().isAirplaneModeOn(null);
+    reactiveAirplaneMode.isAirplaneModeOn(null);
   }
 
   @Test public void observeShouldCreateIntentFilter() {
     // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = spy(ReactiveAirplaneMode.create());
+    final ReactiveAirplaneMode reactiveAirplaneModeSpy = spy(reactiveAirplaneMode);
     final Context context = RuntimeEnvironment.application.getApplicationContext();
 
     // when
-    reactiveAirplaneMode.observe(context);
+    reactiveAirplaneModeSpy.observe(context);
 
     // then
-    verify(reactiveAirplaneMode).createIntentFilter();
+    verify(reactiveAirplaneModeSpy).createIntentFilter();
   }
 
   @Test public void isAirplaneModeOnShouldReturnFalseByDefault() {
     // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
     final Context context = RuntimeEnvironment.application.getApplicationContext();
 
     // when
@@ -83,7 +89,6 @@ import static org.mockito.Mockito.verify;
 
   @Test public void getAndObserveShouldEmitAirplaneModeOffByDefault() {
     // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
     final Context context = RuntimeEnvironment.application.getApplicationContext();
 
     // when
@@ -95,7 +100,6 @@ import static org.mockito.Mockito.verify;
 
   @Test public void getShouldEmitAirplaneModeOffByDefault() {
     // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
     final Context context = RuntimeEnvironment.application.getApplicationContext();
 
     // when
@@ -106,9 +110,6 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCreateIntentFilter() {
-    // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
-
     // when
     final IntentFilter intentFilter = reactiveAirplaneMode.createIntentFilter();
 
@@ -117,9 +118,6 @@ import static org.mockito.Mockito.verify;
   }
 
   @Test public void shouldCreateIntentFilterWithAirplaneModeChangedAction() {
-    // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
-
     // when
     final IntentFilter intentFilter = reactiveAirplaneMode.createIntentFilter();
 
@@ -129,7 +127,6 @@ import static org.mockito.Mockito.verify;
 
   @Test public void shouldTryToUnregisterReceiver() {
     // given
-    final ReactiveAirplaneMode reactiveAirplaneMode = ReactiveAirplaneMode.create();
     final BroadcastReceiver broadcastReceiver = mock(BroadcastReceiver.class);
     final Context context = spy(RuntimeEnvironment.application.getApplicationContext());
 

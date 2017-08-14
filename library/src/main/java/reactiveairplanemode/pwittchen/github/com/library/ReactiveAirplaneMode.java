@@ -83,13 +83,7 @@ public class ReactiveAirplaneMode {
     return Observable.create(new ObservableOnSubscribe<Boolean>() {
       @Override public void subscribe(@NonNull final ObservableEmitter<Boolean> emitter)
           throws Exception {
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override public void onReceive(final Context context, final Intent intent) {
-            boolean isAirplaneModeOn = intent.getBooleanExtra(INTENT_EXTRA_STATE, false);
-            emitter.onNext(isAirplaneModeOn);
-          }
-        };
-
+        final BroadcastReceiver receiver = createBroadcastReceiver(emitter);
         context.registerReceiver(receiver, filter);
 
         disposeInUiThread(new Action() {
@@ -99,6 +93,16 @@ public class ReactiveAirplaneMode {
         });
       }
     });
+  }
+
+  @NonNull public BroadcastReceiver createBroadcastReceiver(
+      @NonNull final ObservableEmitter<Boolean> emitter) {
+    return new BroadcastReceiver() {
+      @Override public void onReceive(final Context context, final Intent intent) {
+        boolean isAirplaneModeOn = intent.getBooleanExtra(INTENT_EXTRA_STATE, false);
+        emitter.onNext(isAirplaneModeOn);
+      }
+    };
   }
 
   @NonNull public IntentFilter createIntentFilter() {
