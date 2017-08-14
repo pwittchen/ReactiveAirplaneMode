@@ -1,4 +1,4 @@
-ReactiveAirplaneMode [![Build Status](https://travis-ci.org/pwittchen/ReactiveAirplaneMode.svg?branch=master)](https://travis-ci.org/pwittchen/ReactiveAirplaneMode)
+ReactiveAirplaneMode [![Build Status](https://travis-ci.org/pwittchen/ReactiveAirplaneMode.svg?branch=master)](https://travis-ci.org/pwittchen/ReactiveAirplaneMode) [![codecov](https://codecov.io/gh/pwittchen/ReactiveAirplaneMode/branch/master/graph/badge.svg)](https://codecov.io/gh/pwittchen/ReactiveAirplaneMode)
 ====================
 ✈️ Android library listening airplane mode with RxJava Observables
 
