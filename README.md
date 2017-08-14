@@ -4,6 +4,18 @@ ReactiveAirplaneMode
 
 This library is compatible with RxJava2 and RxAndroid2.
 
+Contents
+--------
+
+- [Usage](#usage)
+- [Examples](#examples)
+- [Download](#download)
+- [Tests](#tests)
+- [Code style](#code-style)
+- [Static code analysis](#static-code-analysis)
+- [Changelog](#changelog)
+- [License](#license)
+
 Usage
 -----
 
