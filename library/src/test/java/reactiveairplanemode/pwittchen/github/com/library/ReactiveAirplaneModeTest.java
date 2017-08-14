@@ -34,7 +34,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
+@SuppressWarnings("PMD") @RunWith(RobolectricTestRunner.class)
+public class ReactiveAirplaneModeTest {
 
   private Context context;
   private ReactiveAirplaneMode reactiveAirplaneMode;
