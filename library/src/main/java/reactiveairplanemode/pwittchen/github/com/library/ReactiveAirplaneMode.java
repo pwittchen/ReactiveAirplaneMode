@@ -15,6 +15,7 @@
  */
 package reactiveairplanemode.pwittchen.github.com.library;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,8 +43,28 @@ public class ReactiveAirplaneMode {
   private static final String INTENT_ACTION_AIRPLANE_MODE = "android.intent.action.AIRPLANE_MODE";
   private static final String INTENT_EXTRA_STATE = "state";
 
-  //TODO: check if that works
-  public Observable<Boolean> observe(final Context context) {
+  private ReactiveAirplaneMode() {
+  }
+
+  /**
+   * Creates an instance of ReactiveAirplaneMode class
+   *
+   * @return ReactiveAirplaneMode object
+   */
+  public static ReactiveAirplaneMode create() {
+    return new ReactiveAirplaneMode();
+  }
+
+  /**
+   * Observes Airplane Mode state of the device with BroadcastReceiver.
+   * RxJava2 Observable emits true if the airplane mode turns on and false otherwise.
+   *
+   * @param context of the Application or Activity
+   * @return RxJava2 Observable with Boolean value indicating state of the airplane mode
+   */
+  public static Observable<Boolean> observe(final Context context) {
+    checkNotNull(context, "context == null");
+
     final IntentFilter filter = new IntentFilter(INTENT_ACTION_AIRPLANE_MODE);
     filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 
@@ -59,7 +80,7 @@ public class ReactiveAirplaneMode {
 
         context.registerReceiver(receiver, filter);
 
-        unsubscribeInUiThread(new Action() {
+        disposeInUiThread(new Action() {
           @Override public void run() throws Exception {
             tryToUnregisterReceiver(receiver, context);
           }
@@ -68,7 +89,16 @@ public class ReactiveAirplaneMode {
     }).defaultIfEmpty(isAirplaneModeOn(context));
   }
 
-  public void tryToUnregisterReceiver(final BroadcastReceiver receiver, final Context context) {
+  /**
+   * Tries to unregister BroadcastReceiver.
+   * Calls {@link #onError(java.lang.String, java.lang.Exception)} method
+   * if receiver was already unregistered
+   *
+   * @param receiver BroadcastReceiver
+   * @param context of the Application or Activity
+   */
+  public static void tryToUnregisterReceiver(final BroadcastReceiver receiver,
+      final Context context) {
     try {
       context.unregisterReceiver(receiver);
     } catch (Exception exception) {
@@ -76,37 +106,97 @@ public class ReactiveAirplaneMode {
     }
   }
 
-  @SuppressWarnings("deprecation") public boolean isAirplaneModeOn(final Context context) {
-    String airplaneModeOn;
+  /**
+   * Checks airplane mode once basing on the system settings.
+   * Returns true if airplane mode is on or false otherwise.
+   *
+   * @param context of the Activity or Application
+   * @return boolean value indicating state of the airplane mode.
+   */
+  public static boolean isAirplaneModeOn(final Context context) {
+    checkNotNull(context, "context == null");
 
-    boolean isAtLeastAndroid17 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+    String airplaneModeOnSetting;
 
-    if (isAtLeastAndroid17) {
-      airplaneModeOn = Settings.Global.AIRPLANE_MODE_ON;
+    if (isAtLeastAndroidJellyBeanMr1()) {
+      airplaneModeOnSetting = getAirplaneModeOnSettingGlobal();
     } else {
-      airplaneModeOn = Settings.System.AIRPLANE_MODE_ON;
+      airplaneModeOnSetting = getAirplaneModeOnSettingSystem();
     }
 
-    return Settings.System.getInt(context.getContentResolver(), airplaneModeOn, 0) == 0;
+    return Settings.System.getInt(context.getContentResolver(), airplaneModeOnSetting, 0) == 0;
   }
 
-  public void onError(final String message, final Exception exception) {
+  /**
+   * Returns setting indicating airplane mode (for Android 17 and higher)
+   *
+   * @return String indicating airplane mode setting
+   */
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  private static String getAirplaneModeOnSettingGlobal() {
+    return Settings.Global.AIRPLANE_MODE_ON;
+  }
+
+  /**
+   * Returns setting indicating airplane mode (for Android 16 and lower)
+   *
+   * @return String indicating airplane mode setting
+   */
+  @SuppressWarnings("deprecation") private static String getAirplaneModeOnSettingSystem() {
+    return Settings.System.AIRPLANE_MODE_ON;
+  }
+
+  /**
+   * Handles errors which occurs within this class
+   *
+   * @param message with an error
+   * @param exception which occurred
+   */
+  public static void onError(final String message, final Exception exception) {
     Log.e(LOG_TAG, message, exception);
   }
 
-  private Disposable unsubscribeInUiThread(final Action unsubscribe) {
+  /**
+   * Validation method, which checks if an object is null
+   *
+   * @param object to verify
+   * @param message to be thrown in exception
+   */
+  public static void checkNotNull(Object object, String message) {
+    if (object == null) {
+      throw new IllegalArgumentException(message);
+    }
+  }
+
+  /**
+   * Validation method, which checks if current Android version is at least Jelly Bean MR1 (API 17)
+   * or higher
+   *
+   * @return boolean true if current Android version is Jelly Bean MR1 or higher
+   */
+  public static boolean isAtLeastAndroidJellyBeanMr1() {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+  }
+
+  /**
+   * Disposes an action in UI Thread
+   *
+   * @param dispose action to be executed
+   * @return Disposable object
+   */
+  private static Disposable disposeInUiThread(final Action dispose) {
     return Disposables.fromAction(new Action() {
       @Override public void run() throws Exception {
         if (Looper.getMainLooper() == Looper.myLooper()) {
-          unsubscribe.run();
+          dispose.run();
         } else {
           final Scheduler.Worker inner = AndroidSchedulers.mainThread().createWorker();
           inner.schedule(new Runnable() {
             @Override public void run() {
               try {
-                unsubscribe.run();
-              } catch (Exception e) {
-                onError("Could not unregister receiver in UI Thread", e);
+                dispose.run();
+              } catch (Exception exception) {
+                onError("Could not unregister receiver in UI Thread", exception);
               }
               inner.dispose();
             }

@@ -15,14 +15,38 @@
  */
 package com.github.pwittchen.reactiveairplanemode.app;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 import com.github.pwittchen.reactiveairplanemode.R;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import reactiveairplanemode.pwittchen.github.com.library.ReactiveAirplaneMode;
 
 public class MainActivity extends AppCompatActivity {
+
+  private Disposable disposable;
+  private TextView textView;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    textView = (TextView) findViewById(R.id.tv_airplane_mode);
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    disposable = ReactiveAirplaneMode.observe(this)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(isOn -> textView.setText(String.format("Airplane mode: %s", isOn.toString())));
+  }
+
+  @Override protected void onPause() {
+    super.onPause();
+    if (disposable != null && !disposable.isDisposed()) {
+      disposable.dispose();
+    }
   }
 }
