@@ -23,6 +23,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -32,7 +33,6 @@ import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.disposables.Disposables;
 import io.reactivex.functions.Action;
@@ -66,7 +66,7 @@ public class ReactiveAirplaneMode {
    * @param context of the Application or Activity
    * @return RxJava2 Observable with Boolean value indicating state of the airplane mode
    */
-  public static Observable<Boolean> getAndObserve(final Context context) {
+  public Observable<Boolean> getAndObserve(final Context context) {
     return observe(context).startWith(isAirplaneModeOn(context));
   }
 
@@ -77,14 +77,14 @@ public class ReactiveAirplaneMode {
    * @param context of the Application or Activity
    * @return RxJava2 Observable with Boolean value indicating state of the airplane mode
    */
-  public static Observable<Boolean> observe(final Context context) {
-    checkNotNull(context, "context == null");
+  public Observable<Boolean> observe(final Context context) {
+    checkContextIsNotNull(context);
 
-    final IntentFilter filter = new IntentFilter(INTENT_ACTION_AIRPLANE_MODE);
-    filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+    final IntentFilter filter = createIntentFilter();
 
     return Observable.create(new ObservableOnSubscribe<Boolean>() {
-      @Override public void subscribe(@NonNull final ObservableEmitter<Boolean> emitter)
+      @Override public void subscribe(
+          @NonNull final ObservableEmitter<Boolean> emitter)
           throws Exception {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(final Context context, final Intent intent) {
@@ -104,6 +104,12 @@ public class ReactiveAirplaneMode {
     });
   }
 
+  @NonNull public IntentFilter createIntentFilter() {
+    final IntentFilter filter = new IntentFilter(INTENT_ACTION_AIRPLANE_MODE);
+    filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+    return filter;
+  }
+
   /**
    * Tries to unregister BroadcastReceiver.
    * Calls {@link #onError(java.lang.String, java.lang.Exception)} method
@@ -112,7 +118,7 @@ public class ReactiveAirplaneMode {
    * @param receiver BroadcastReceiver
    * @param context of the Application or Activity
    */
-  public static void tryToUnregisterReceiver(final BroadcastReceiver receiver,
+  public void tryToUnregisterReceiver(final BroadcastReceiver receiver,
       final Context context) {
     try {
       context.unregisterReceiver(receiver);
@@ -123,10 +129,13 @@ public class ReactiveAirplaneMode {
 
   /**
    * gets airplane mode state wrapped within a Single type
+   *
    * @param context of the Application or Activity
    * @return RxJava2 Single with Boolean value indicating state of the airplane mode
    */
-  public static Single<Boolean> get(final Context context) {
+  public Single<Boolean> get(final Context context) {
+    checkContextIsNotNull(context);
+
     return Single.create(new SingleOnSubscribe<Boolean>() {
       @Override public void subscribe(@NonNull SingleEmitter<Boolean> emitter) throws Exception {
         emitter.onSuccess(isAirplaneModeOn(context));
@@ -141,9 +150,8 @@ public class ReactiveAirplaneMode {
    * @param context of the Activity or Application
    * @return boolean value indicating state of the airplane mode.
    */
-  public static boolean isAirplaneModeOn(final Context context) {
-    checkNotNull(context, "context == null");
-
+  public boolean isAirplaneModeOn(final Context context) {
+    checkContextIsNotNull(context);
     String airplaneModeOnSetting;
 
     if (isAtLeastAndroidJellyBeanMr1()) {
@@ -161,7 +169,7 @@ public class ReactiveAirplaneMode {
    * @return String indicating airplane mode setting
    */
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-  private static String getAirplaneModeOnSettingGlobal() {
+  private String getAirplaneModeOnSettingGlobal() {
     return Settings.Global.AIRPLANE_MODE_ON;
   }
 
@@ -170,7 +178,7 @@ public class ReactiveAirplaneMode {
    *
    * @return String indicating airplane mode setting
    */
-  @SuppressWarnings("deprecation") private static String getAirplaneModeOnSettingSystem() {
+  @SuppressWarnings("deprecation") private String getAirplaneModeOnSettingSystem() {
     return Settings.System.AIRPLANE_MODE_ON;
   }
 
@@ -180,8 +188,12 @@ public class ReactiveAirplaneMode {
    * @param message with an error
    * @param exception which occurred
    */
-  public static void onError(final String message, final Exception exception) {
+  public void onError(final String message, final Exception exception) {
     Log.e(LOG_TAG, message, exception);
+  }
+
+  private void checkContextIsNotNull(Context context) {
+    checkNotNull(context, "context == null");
   }
 
   /**
@@ -190,7 +202,7 @@ public class ReactiveAirplaneMode {
    * @param object to verify
    * @param message to be thrown in exception
    */
-  public static void checkNotNull(Object object, String message) {
+  public void checkNotNull(Object object, String message) {
     if (object == null) {
       throw new IllegalArgumentException(message);
     }
@@ -202,7 +214,7 @@ public class ReactiveAirplaneMode {
    *
    * @return boolean true if current Android version is Jelly Bean MR1 or higher
    */
-  public static boolean isAtLeastAndroidJellyBeanMr1() {
+  public boolean isAtLeastAndroidJellyBeanMr1() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
   }
 
@@ -212,7 +224,7 @@ public class ReactiveAirplaneMode {
    * @param dispose action to be executed
    * @return Disposable object
    */
-  private static Disposable disposeInUiThread(final Action dispose) {
+  private Disposable disposeInUiThread(final Action dispose) {
     return Disposables.fromAction(new Action() {
       @Override public void run() throws Exception {
         if (Looper.getMainLooper() == Looper.myLooper()) {

@@ -18,13 +18,46 @@ package reactiveairplanemode.pwittchen.github.com.library;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
-//TODO: write tests!
 @RunWith(RobolectricTestRunner.class) public class ReactiveAirplaneModeTest {
 
   @Test public void reactiveAirplaneModeObjectShouldNotBeNull() {
     assertThat(ReactiveAirplaneMode.create()).isNotNull();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getAndObserveShouldThrowAnExceptionForNullContext() {
+    ReactiveAirplaneMode.create().getAndObserve(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void observeShouldThrowAnExceptionForNullContext() {
+    ReactiveAirplaneMode.create().observe(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getShouldThrowAnExceptionForNullContext() {
+    ReactiveAirplaneMode.create().get(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void isAirplaneModeOnShouldThrowAnExceptionForNullContext() {
+    ReactiveAirplaneMode.create().isAirplaneModeOn(null);
+  }
+
+  @Test public void observeShouldCreateIntentFilter() {
+    // given
+    ReactiveAirplaneMode reactiveAirplaneMode = spy(ReactiveAirplaneMode.create());
+
+    // when
+    reactiveAirplaneMode.observe(RuntimeEnvironment.application);
+
+    // then
+    verify(reactiveAirplaneMode).createIntentFilter();
   }
 }

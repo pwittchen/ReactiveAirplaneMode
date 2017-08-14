@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
   @Override protected void onResume() {
     super.onResume();
-    disposable = ReactiveAirplaneMode.getAndObserve(this)
+    disposable = ReactiveAirplaneMode.create()
+        .getAndObserve(this)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(isOn -> {
