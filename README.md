@@ -72,9 +72,23 @@ Exemplary application is located in `app` directory of this repository.
 Download
 --------
 
-TBD.
+You can depend on the library through Maven:
 
-Library will be published on Maven Central Repository soon. Please, stay tuned.
+```xml
+<dependency>
+    <groupId>com.github.pwittchen</groupId>
+    <artifactId>reactiveairplanemode</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+or through Gradle:
+
+```groovy
+dependencies {
+  compile 'com.github.pwittchen:reactiveairplanemode:0.0.1'
+}
+```
 
 Tests
 -----
