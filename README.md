@@ -17,6 +17,7 @@ Contents
 - [Static code analysis](#static-code-analysis)
 - [Changelog](#changelog)
 - [Releasing](#releasing)
+- [References](#references)
 - [License](#license)
 
 Usage
