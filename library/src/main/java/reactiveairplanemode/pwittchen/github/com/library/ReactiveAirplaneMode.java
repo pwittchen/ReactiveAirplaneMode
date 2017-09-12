@@ -86,11 +86,13 @@ public class ReactiveAirplaneMode {
         final BroadcastReceiver receiver = createBroadcastReceiver(emitter);
         context.registerReceiver(receiver, filter);
 
-        disposeInUiThread(new Action() {
+        final Disposable disposable = disposeInUiThread(new Action() {
           @Override public void run() throws Exception {
             tryToUnregisterReceiver(receiver, context);
           }
         });
+
+        emitter.setDisposable(disposable);
       }
     });
   }
