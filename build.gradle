@@ -1,10 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 ext {
-  minSdkVersion = 9
-  compileSdkVersion = 25
-  buildToolsVersion = '25.0.2'
-  gradleVersion = '2.3.0'
+  minSdkVersion = 23
+  compileSdkVersion = 28
+  buildToolsVersion = '28.0.3'
 }
 
 ext.deps = [rxjava2           : 'io.reactivex.rxjava2:rxjava:2.2.12',
@@ -19,13 +18,15 @@ ext.deps = [rxjava2           : 'io.reactivex.rxjava2:rxjava:2.2.12',
 
 buildscript {
   repositories {
+    google()
+    jcenter()
+    mavenCentral()
     jcenter()
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:2.3.3'
+    classpath 'com.android.tools.build:gradle:3.5.0'
     classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
-    classpath 'me.tatarka:gradle-retrolambda:3.7.1'
 
     // NOTE: Do not place your application dependencies here; they belong
     // in the individual module build.gradle files
@@ -35,9 +36,6 @@ buildscript {
 allprojects {
   repositories {
     jcenter()
+    google()
   }
-}
-
-task clean(type: Delete) {
-  delete rootProject.buildDir
 }

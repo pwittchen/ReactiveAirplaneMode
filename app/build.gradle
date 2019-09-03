@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
@@ -27,7 +26,7 @@ android {
 }
 
 dependencies {
-  compile project(':library')
-  compile deps.appcompatv7
-  compile deps.constraintlayout
+  implementation project(':library')
+  implementation deps.appcompatv7
+  implementation deps.constraintlayout
 }
