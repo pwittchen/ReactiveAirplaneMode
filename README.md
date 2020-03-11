@@ -114,7 +114,7 @@ Code style used in the project is called `SquareAndroid` from Java Code Styles r
 Static code analysis
 --------------------
 
-Static code analysis runs Checkstyle, FindBugs, PMD and Lint. It can be executed with command:
+Static code analysis runs Checkstyle, PMD and Lint. It can be executed with command:
 
 ```
 ./gradlew check

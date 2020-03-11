@@ -16,8 +16,8 @@
 package com.github.pwittchen.reactiveairplanemode.app;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 import com.github.pwittchen.reactiveairplanemode.R;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;

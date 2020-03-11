@@ -5,6 +5,7 @@ android {
   buildToolsVersion rootProject.ext.buildToolsVersion
 
   defaultConfig {
+    multiDexEnabled true
     applicationId "com.github.pwittchen.reactiveairplanemode"
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.compileSdkVersion
@@ -27,6 +28,6 @@ android {
 
 dependencies {
   implementation project(':library')
-  implementation deps.appcompatv7
+  implementation deps.appcompat
   implementation deps.constraintlayout
 }
